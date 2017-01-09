@@ -23,7 +23,7 @@ class Crud extends React.Component {
         break;
       case 'new':
         return (
-          <Form onSuccess={() => this.openIndex()} />
+          <Form onSubmit={(form) => this.createBook(form)} />
         );
         break;
     }
@@ -46,6 +46,12 @@ class Crud extends React.Component {
   deleteBook(id) {
     fetch('/books/' + id, { method: 'DELETE' })
       .then(() => this.reload());
+  }
+  createBook(form) {
+    let formData = new FormData();
+    formData.append('book[name]', form.name);
+    fetch('/books', { method: 'POST', body: formData })
+      .then(() => this.openIndex());
   }
 }
 
@@ -95,10 +101,7 @@ class Form extends React.Component {
   }
 
   handleSubmit(event) {
-    let formData = new FormData();
-    formData.append('book[name]', this.state.name);
-    fetch('/books', { method: 'POST', body: formData })
-      .then(this.props.onSuccess);
+    this.props.onSubmit(this.state);
     event.preventDefault();
   }
 
