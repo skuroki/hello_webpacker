@@ -14,7 +14,7 @@ class Crud extends React.Component {
       case 'index':
         return (
           <div>
-            <Table books={this.state.books} onDelete={(id) => this.deleteBook(id)} />
+            <Table books={this.state.books} onDelete={(id) => this.deleteBook(id)} onEdit={(id) => this.openEdit(id)} />
             <button onClick={() => this.changePhase('new')}>
               add new book
             </button>
@@ -23,10 +23,18 @@ class Crud extends React.Component {
         break;
       case 'new':
         return (
-          <Form onSubmit={(form) => this.createBook(form)} />
+          <Form onSubmit={(form) => this.createBook(form)} name='' />
+        );
+        break;
+      case 'edit':
+        return (
+          <Form onSubmit={(form) => this.updateBook(form)} name={this.findBook(this.state.id).name} />
         );
         break;
     }
+  }
+  findBook(id) {
+    return this.state.books.find((book) => book.id == id);
   }
   componentDidMount() {
     this.openIndex();
@@ -43,6 +51,10 @@ class Crud extends React.Component {
     this.reload();
     this.changePhase('index');
   }
+  openEdit(id) {
+    this.changePhase('edit');
+    this.setState({id: id});
+  }
   deleteBook(id) {
     fetch('/books/' + id, { method: 'DELETE' })
       .then(() => this.reload());
@@ -51,6 +63,12 @@ class Crud extends React.Component {
     let formData = new FormData();
     formData.append('book[name]', form.name);
     fetch('/books', { method: 'POST', body: formData })
+      .then(() => this.openIndex());
+  }
+  updateBook(form) {
+    let formData = new FormData();
+    formData.append('book[name]', form.name);
+    fetch('/books/' + this.state.id, { method: 'PATCH', body: formData })
       .then(() => this.openIndex());
   }
 }
@@ -63,6 +81,9 @@ class Table extends React.Component {
           <td>{book.id}</td>
           <td>{book.name}</td>
           <td>
+            <button onClick={() => this.props.onEdit(book.id)}>
+              edit
+            </button>
             <button onClick={() => this.props.onDelete(book.id)}>
               delete
             </button>
@@ -88,9 +109,9 @@ class Table extends React.Component {
 }
 
 class Form extends React.Component {
-  constructor() {
-    super();
-    this.state = {name: ''};
+  constructor(props) {
+    super(props);
+    this.state = {name: props.name}
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
