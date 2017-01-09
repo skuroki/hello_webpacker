@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+require("../../stylesheet/crud.scss");
+
 class Crud extends React.Component {
   constructor() {
     super();
