@@ -14,7 +14,7 @@ class Crud extends React.Component {
       case 'index':
         return (
           <div>
-            <Table books={this.state.books} />
+            <Table books={this.state.books} onDelete={(id) => this.deleteBook(id)} />
             <button onClick={() => this.changePhase('new')}>
               add new book
             </button>
@@ -43,6 +43,10 @@ class Crud extends React.Component {
     this.reload();
     this.changePhase('index');
   }
+  deleteBook(id) {
+    fetch('/books/' + id, { method: 'DELETE' })
+      .then(() => this.reload());
+  }
 }
 
 class Table extends React.Component {
@@ -52,6 +56,11 @@ class Table extends React.Component {
         <tr key={book.id}>
           <td>{book.id}</td>
           <td>{book.name}</td>
+          <td>
+            <button onClick={() => this.props.onDelete(book.id)}>
+              delete
+            </button>
+          </td>
         </tr>
       );
     });
@@ -61,6 +70,7 @@ class Table extends React.Component {
           <tr>
             <th>id</th>
             <th>name</th>
+            <th>actions</th>
           </tr>
         </thead>
         <tbody>
