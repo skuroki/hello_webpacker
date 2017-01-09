@@ -12,11 +12,14 @@ class Crud extends React.Component {
     return (
       <div>
         <Table books={this.state.books} />
-        <Form />
+        <Form onSuccess={() => this.reload()} />
       </div>
     );
   }
   componentDidMount() {
+    this.reload();
+  }
+  reload() {
     fetch('/books')
       .then((response) => response.json())
       .then((json) => this.setState({books: json}));
@@ -65,7 +68,8 @@ class Form extends React.Component {
   handleSubmit(event) {
     let formData = new FormData();
     formData.append('book[name]', this.state.name);
-    fetch('/books', { method: 'POST', body: formData });
+    fetch('/books', { method: 'POST', body: formData })
+      .then(this.props.onSuccess);
     event.preventDefault();
   }
 
