@@ -2,17 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 class Crud extends React.Component {
-  render() {
-    return (
-      <div>
-        <Table />
-        <Form />
-      </div>
-    );
-  }
-}
-
-class Table extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -20,7 +9,23 @@ class Table extends React.Component {
     };
   }
   render() {
-    const bookRows = this.state.books.map((book) => {
+    return (
+      <div>
+        <Table books={this.state.books} />
+        <Form />
+      </div>
+    );
+  }
+  componentDidMount() {
+    fetch('/books')
+      .then((response) => response.json())
+      .then((json) => this.setState({books: json}));
+  }
+}
+
+class Table extends React.Component {
+  render() {
+    const bookRows = this.props.books.map((book) => {
       return (
         <tr key={book.id}>
           <td>{book.id}</td>
@@ -41,11 +46,6 @@ class Table extends React.Component {
         </tbody>
       </table>
     );
-  }
-  componentDidMount() {
-    fetch('/books')
-      .then((response) => response.json())
-      .then((json) => this.setState({books: json}));
   }
 }
 
