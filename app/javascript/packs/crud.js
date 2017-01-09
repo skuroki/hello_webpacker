@@ -2,6 +2,17 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 class Crud extends React.Component {
+  render() {
+    return (
+      <div>
+        <Table />
+        <Form />
+      </div>
+    );
+  }
+}
+
+class Table extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -38,7 +49,40 @@ class Crud extends React.Component {
   }
 }
 
+class Form extends React.Component {
+  constructor() {
+    super();
+    this.state = {name: ''};
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({name: event.target.value});
+  }
+
+  handleSubmit(event) {
+    let formData = new FormData();
+    formData.append('book[name]', this.state.name);
+    fetch('/books', { method: 'POST', body: formData });
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Name:
+          <input type="text" value={this.state.name} onChange={this.handleChange} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+}
+
 document.addEventListener("DOMContentLoaded", e => {
-  ReactDOM.render(<Crud name="React" />, document.getElementById('content'))
+  ReactDOM.render(<Crud />, document.getElementById('content'))
 })
 
