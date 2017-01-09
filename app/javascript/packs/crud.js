@@ -5,24 +5,43 @@ class Crud extends React.Component {
   constructor() {
     super();
     this.state = {
+      phase: 'index',
       books: [],
     };
   }
   render() {
-    return (
-      <div>
-        <Table books={this.state.books} />
-        <Form onSuccess={() => this.reload()} />
-      </div>
-    );
+    switch (this.state.phase) {
+      case 'index':
+        return (
+          <div>
+            <Table books={this.state.books} />
+            <button onClick={() => this.changePhase('new')}>
+              add new book
+            </button>
+          </div>
+        );
+        break;
+      case 'new':
+        return (
+          <Form onSuccess={() => this.openIndex()} />
+        );
+        break;
+    }
   }
   componentDidMount() {
-    this.reload();
+    this.openIndex();
+  }
+  changePhase(newPhase) {
+    this.setState({phase: newPhase});
   }
   reload() {
     fetch('/books')
       .then((response) => response.json())
       .then((json) => this.setState({books: json}));
+  }
+  openIndex() {
+    this.reload();
+    this.changePhase('index');
   }
 }
 
