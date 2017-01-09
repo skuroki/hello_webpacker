@@ -8,11 +8,16 @@
     "coffee-script": "^1.12.2",
     "path-complete-extname": "^0.1.0",
     "rails-erb-loader": "^3.2.0",
+    "sass-loader": "^4.1.1",
     "webpack": "beta",
     "webpack-merge": "^2.3.1"
   },
   "dependencies": {
+    "css-loader": "^0.26.1",
+    "node-sass": "^4.2.0",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
-  }
+    "react-dom": "^15.4.2",
+    "style-loader": "^0.13.1"
+  },
+  "peerDependencies": {}
 }
